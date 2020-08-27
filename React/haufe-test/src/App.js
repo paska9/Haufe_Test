@@ -3,6 +3,7 @@ import './App.css';
 import Nav from './nav';
 import Home from './Home';
 import Login from './Login';
+import User from './User';
 import Register from './Register';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
@@ -16,6 +17,7 @@ function App() {
           <Route exact path="/" component={Home}></Route>
           <Route path="/login" component={Login}></Route>
           <Route path="/register" component={Register}></Route>
+          <Route exact path="/user" component={User}></Route>
         </Switch>
       </div>
     </Router>

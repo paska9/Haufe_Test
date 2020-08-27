@@ -16,9 +16,9 @@ function Register() {
             <label>Confirm Password</label>
             <input type='password' name='password1'></input><br/>
             <input type="submit" value="Register"/>
-            {/* <Link to="/users">
+            <Link to="/user">
                 Register
-              </Link> */}
+              </Link>
         </form>
       </div>
   );

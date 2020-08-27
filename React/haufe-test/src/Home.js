@@ -8,6 +8,7 @@ function Home() {
   return (
       <div>
         <h2>Home Page</h2>
+        <p>Hello, you are a guest. Please log in.</p>
       </div>
   );
 }
