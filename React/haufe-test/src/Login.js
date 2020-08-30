@@ -3,6 +3,7 @@ import React from 'react';
 //import Header from "./header.js"
 import Axios from 'axios'
 
+
 class Login extends React.Component {
 
     constructor(props) {
@@ -29,7 +30,7 @@ class Login extends React.Component {
 
         e.preventDefault();
 
-        const url = 'http://localhost:4000/';
+        const url = 'http://localhost:4000/login';
 
         const user = {
             username: this.state.username, 
@@ -40,10 +41,19 @@ class Login extends React.Component {
         console.log("password=" + user.password);
 
         Axios.post(url, user).then((res) => {
-            console.log(res); 
+            if (res.data.allowLogin) {
+                console.log('Login Succesfull');
+                console.log(res.data.userID); 
+                localStorage.setItem('ID', res.data.userID);
+                this.props.history.push("/user");
+            }
+            else {
+                console.log('Wrong username or password.');
+            }
         }).catch((e) => {
             console.log("error");
         });
+
 
     }
 

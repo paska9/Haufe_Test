@@ -2,12 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-const Pool = require('pg').Pool
+const Pool = require('pg').Pool;
 
-var corsOptions = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-};
+app.use(cors());
 
 //create a client instance of the pg library
 var pool = new Pool({
@@ -18,23 +15,44 @@ var pool = new Pool({
   port: "5432"
 });
 
-app.use(cors(corsOptions));
-
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (request, response) => {
-  console.log(request);
-    let q = "Select \"user\" -> 'username' as username  from users limit 1";
-    
-    pool.query(q, (error, results) => {
+app.post('/login', (request, response) => {
+  console.log(request.body);
+   
+  let q = "SELECT id FROM users WHERE \"user\" ->> 'username'  = '"+request.body.username+"' AND \"user\" ->> 'password'  = '"+request.body.password+"' ";
+  
+  pool.query(q, (error, results) => {
+    if (error) {
+      throw error;
+    } else {
+      if (results.rows.length)
+        response.status(200).json({allowLogin: true, userID: results.rows[0].id});
+      else 
+        response.status(200).json({allowLogin: false, userID: null});
+
+    }
+  });
+});
+
+app.post('/register', (request, response) => {
+  console.log(request.body);
+   
+   let q = "Insert Into users(\"user\") Values('{\"role\":\"internal\",\"password\":\""+request.body.password+"\",\"username\":\""+request.body.username+"\"}')";
+   console.log(q); 
+   pool.query(q, (error, results) => {
       if (error) {
         throw error;
       } else {
-        response.status(200).json(results.rows[0].username);
+        if (results.rows.length)
+          response.status(200).json({allowLogin: true, userID: results.rows[0].id});
+        else 
+          response.status(200).json({allowLogin: false, userID: null});
+
       }
     });
 });

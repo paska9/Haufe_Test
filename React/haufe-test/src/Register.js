@@ -28,29 +28,37 @@ class Login extends React.Component {
 
     handleSubmit = (e) => {
 
-        e.preventDefault();
 
-        const url = 'http://localhost:4000/';
+      e.preventDefault();
 
-        const user = {
+      const url = 'http://localhost:4000/register';
 
-            username: this.state.username, 
-            password: this.state.password,
-            confirm_password: this.state.confirm_password
-        }
+      const user = {
+          username: this.state.username, 
+          password: this.state.password,
+          confirm_password: this.state.confirm_password
+      }
 
-        console.log("username=" + user.username);
-        console.log("password=" + user.password);
-        console.log("confirm_password=" + user.confirm_password);
+      console.log("username=" + user.username);
+      console.log("password=" + user.password);
+      console.log("confirm_password=" + user.confirm_password);
 
+      if(user.password === user.confirm_password){
         Axios.post(url, user).then((res) => {
+          if (res.data.allowLogin) {
+              console.log('Login Succesfull');
+              console.log(res.data.userID); 
+              localStorage.setItem('ID', res.data.userID);
+              this.props.history.push("/user");
+          }
+      }).catch((e) => {
+          console.log("error");
+      });
+      }else{
+        console.log("The password not matches");
+      }
 
-            console.log(res); 
 
-        }).catch((e) => {
-
-            console.log("error");
-        });
 
     }
 
