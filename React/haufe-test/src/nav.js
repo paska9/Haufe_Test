@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import Login from './Login';
 
 function Nav() {
+    let loggedIn = localStorage.getItem('loggedIn');
 
     const navStyle = {
         color:'white'

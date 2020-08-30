@@ -24,17 +24,32 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post('/login', (request, response) => {
   console.log(request.body);
    
-  let q = "SELECT id FROM users WHERE \"user\" ->> 'username'  = '"+request.body.username+"' AND \"user\" ->> 'password'  = '"+request.body.password+"' ";
+  let q = "SELECT id, \"user\" ->> 'role' as role FROM users WHERE \"user\" ->> 'username'  = '"+request.body.username+"' AND \"user\" ->> 'password'  = '"+request.body.password+"' ";
   
   pool.query(q, (error, results) => {
     if (error) {
       throw error;
     } else {
       if (results.rows.length)
-        response.status(200).json({allowLogin: true, userID: results.rows[0].id});
+        response.status(200).json({allowLogin: true, userID: results.rows[0].id, userRole: results.rows[0].role});
       else 
-        response.status(200).json({allowLogin: false, userID: null});
+        response.status(200).json({allowLogin: false, userID: null, userRole: null});
+    }
+  });
+});
 
+
+app.get('/getUsers', (request, response) => {
+   
+  let q = "SELECT * FROM users WHERE \"user\" ->> 'role' = 'external' ";
+  
+  pool.query(q, (error, results) => {
+    if (error) {
+      throw error;
+    } else {
+      if (results.rows.length)
+        response.status(200).json({users: results.rows});
+        else response.status(200).json({users: []});
     }
   });
 });
@@ -48,11 +63,20 @@ app.post('/register', (request, response) => {
       if (error) {
         throw error;
       } else {
-        if (results.rows.length)
-          response.status(200).json({allowLogin: true, userID: results.rows[0].id});
-        else 
-          response.status(200).json({allowLogin: false, userID: null});
-
+       if(results.rowCount == 1){
+        let q = "SELECT id, \"user\" ->> 'role' as role FROM users WHERE \"user\" ->> 'username'  = '"+request.body.username+"' AND \"user\" ->> 'password'  = '"+request.body.password+"' ";
+      
+        pool.query(q, (error, results) => {
+          if (error) {
+            throw error;
+          } else {
+            if (results.rows.length)
+              response.status(200).json({allowLogin: true, userID: results.rows[0].id, userRole: results.rows[0].role});
+            else 
+              response.status(200).json({allowLogin: false, userID: null, userRole: null});
+          }
+        });
+      }
       }
     });
 });

@@ -1,6 +1,4 @@
 import React from 'react';
-//import '../public/styles/App.css'
-//import Header from "./header.js"
 import Axios from 'axios'
 
 
@@ -44,7 +42,10 @@ class Login extends React.Component {
             if (res.data.allowLogin) {
                 console.log('Login Succesfull');
                 console.log(res.data.userID); 
+                console.log(res.data.userRole);
+                localStorage.setItem('loggedIn', true);
                 localStorage.setItem('ID', res.data.userID);
+                localStorage.setItem('Role', res.data.userRole);
                 this.props.history.push("/user");
             }
             else {

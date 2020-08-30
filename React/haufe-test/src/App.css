@@ -18,3 +18,10 @@ nav{
   align-items: center;
   list-style: none;
 }
+
+.container{
+  width: auto;
+  height: auto;
+  background-color: rgb(242, 247, 238);
+}
+
