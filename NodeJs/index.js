@@ -27,9 +27,11 @@ app.post('/login', (request, response) => {
   let q = "SELECT id, \"user\" ->> 'role' as role FROM users WHERE \"user\" ->> 'username'  = '"+request.body.username+"' AND \"user\" ->> 'password'  = '"+request.body.password+"' ";
   
   pool.query(q, (error, results) => {
-    if (error) {
+    if (error) 
+    {
       throw error;
-    } else {
+    } else 
+    {
       if (results.rows.length)
         response.status(200).json({allowLogin: true, userID: results.rows[0].id, userRole: results.rows[0].role});
       else 
@@ -44,9 +46,11 @@ app.get('/getUsers', (request, response) => {
   let q = "SELECT * FROM users WHERE \"user\" ->> 'role' = 'external' ";
   
   pool.query(q, (error, results) => {
-    if (error) {
+    if (error) 
+    {
       throw error;
-    } else {
+    } else 
+    {
       if (results.rows.length)
         response.status(200).json({users: results.rows});
         else response.status(200).json({users: []});
@@ -63,7 +67,7 @@ app.post('/register', (request, response) => {
       if (error) {
         throw error;
       } else {
-       if(results.rowCount == 1){
+        if(results.rowCount == 1){
         let q = "SELECT id, \"user\" ->> 'role' as role FROM users WHERE \"user\" ->> 'username'  = '"+request.body.username+"' AND \"user\" ->> 'password'  = '"+request.body.password+"' ";
       
         pool.query(q, (error, results) => {
@@ -76,8 +80,22 @@ app.post('/register', (request, response) => {
               response.status(200).json({allowLogin: false, userID: null, userRole: null});
           }
         });
+        }
       }
+    });
+});
+
+
+app.post('/deleteUser', (request, response) => {
+  console.log(request.body);
+   
+    let q = "delete from users where id = " + request.body.ID;
+    console.log(q); 
+    pool.query(q, (error, results) => {
+      if (error) {
+        throw error;
       }
+      response.status(200).json({deleted: true});
     });
 });
 

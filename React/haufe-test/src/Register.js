@@ -10,7 +10,6 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
-
             username: '',
             password: '',
             confirm_password: ''
@@ -18,17 +17,12 @@ class Login extends React.Component {
     }
 
     handleInputChange = (e) => {
-
         this.setState({
-
             [e.target.name]: e.target.value
-
         });
     }
 
     handleSubmit = (e) => {
-
-
       e.preventDefault();
 
       const url = 'http://localhost:4000/register';
@@ -53,21 +47,16 @@ class Login extends React.Component {
                 localStorage.setItem('Role', res.data.userRole);
               this.props.history.push("/user");
           }
-      }).catch((e) => {
+        }).catch((e) => {
           console.log("error");
       });
       }else{
         console.log("The password not matches");
       }
-
-
-
     }
 
     render() {
-
         return (
-
             <div style={{border:"none"}}>
                 <br></br>
                 <br></br>
@@ -94,7 +83,6 @@ class Login extends React.Component {
                     <br></br>
                 </div>
             </div>
-
         );
     } 
 }

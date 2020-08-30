@@ -18,9 +18,7 @@ class Login extends React.Component {
     handleInputChange = (e) => {
 
         this.setState({
-
             [e.target.name]: e.target.value
-
         });
     }
 
@@ -54,14 +52,10 @@ class Login extends React.Component {
         }).catch((e) => {
             console.log("error");
         });
-
-
     }
 
     render() {
-
         return (
-
             <div style={{border:"none"}}>
                 <br></br>
                 <br></br>
@@ -84,7 +78,6 @@ class Login extends React.Component {
                     <br></br>
                 </div>
             </div>
-
         );
     } 
 }
