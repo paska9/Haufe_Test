@@ -1,25 +1,81 @@
 import React from 'react';
-import './App.css';
-import {Link} from 'react-router-dom';
-import {TextInput } from 'react';
+//import '../public/styles/App.css'
+//import Header from "./header.js"
+import Axios from 'axios'
 
-function Login() {
+class Login extends React.Component {
 
-  return (
-      <div>
-        <h2>Login Page</h2>
-        <form>
-            <label>Username</label>
-            <input type='text' name='username' values='username'></input><br/>
-            <label>Password</label>
-            <input type='password' name='password' values='password'></input><br/>
-            <input type="submit" value="Login" />
-        </form>
-        
+    constructor(props) {
 
+        super(props);
 
-      </div>
-  );
+        this.state = {
+
+            username: '',
+            password: ''
+        };
+    }
+
+    handleInputChange = (e) => {
+
+        this.setState({
+
+            [e.target.name]: e.target.value
+
+        });
+    }
+
+    handleSubmit = (e) => {
+
+        e.preventDefault();
+
+        const url = 'http://localhost:4000/';
+
+        const user = {
+            username: this.state.username, 
+            password: this.state.password
+        }
+
+        console.log("username=" + user.username);
+        console.log("password=" + user.password);
+
+        Axios.post(url, user).then((res) => {
+            console.log(res); 
+        }).catch((e) => {
+            console.log("error");
+        });
+
+    }
+
+    render() {
+
+        return (
+
+            <div style={{border:"none"}}>
+                <br></br>
+                <br></br>
+                <div style={{background:"white"}}>
+                    <center>
+                    <form onSubmit={this.handleSubmit}>
+                        <br></br>
+                        Username: <br></br>
+                        <input type = "text" onChange={this.handleInputChange} name= "username"></input>
+                        <br></br>
+                        <br></br>
+                        Password: <br></br>
+                        <input type = "password" name = "password" onChange={this.handleInputChange}></input>
+                        <br></br>
+                        <br></br>
+                        <input type = "submit" value = "Log-in"></input>
+                        <br></br>
+                    </form>
+                  </center>
+                    <br></br>
+                </div>
+            </div>
+
+        );
+    } 
 }
 
 export default Login;

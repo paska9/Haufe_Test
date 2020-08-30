@@ -1,26 +1,16 @@
 const express = require("express");
-const { Pool } = require("pg");
-const path = require("path");
-const fs = require("fs");
 const bodyParser = require("body-parser");
-
-// create a new Express app server object
+const cors = require("cors");
 const app = express();
+const Pool = require('pg').Pool
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+var corsOptions = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+};
 
-// parse application/json
-app.use(bodyParser.json());
-
-// set the port for the Node application
-const port = process.env.port || 3456;
-
-// set the file path for the HTML file
-const htmlPath = path.join(__dirname + "/index.html");
-
-// create a client instance of the pg library
-var client = new Pool({
+//create a client instance of the pg library
+var pool = new Pool({
   user: "postgres",
   host: "localhost",
   database: "haufe_test",
@@ -28,40 +18,29 @@ var client = new Pool({
   port: "5432"
 });
 
-// 'GET' route for the web app
-app.get("/", (req, resp) => {
-  console.log(`req: ${req}`);
-  console.log(`resp: ${resp}`);
+app.use(cors(corsOptions));
 
-  // send the HTML file back to the front end
-  resp.sendFile(htmlPath);
+// parse requests of content-type - application/json
+app.use(bodyParser.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/', (request, response) => {
+  console.log(request);
+    let q = "Select \"user\" -> 'username' as username  from users limit 1";
+    
+    pool.query(q, (error, results) => {
+      if (error) {
+        throw error;
+      } else {
+        response.status(200).json(results.rows[0].username);
+      }
+    });
 });
 
-// 'POST' route for the web app
-app.post("/query", function(req, resp) {
-  // parse the user's query
-  let userQuery = req.body.query;
-  console.log(`\nuserQuery: ${typeof userQuery}`);
-  console.log(`${userQuery}`);
-
-  // load the HTML file into the Node app's memory
-  let htmlData = fs.readFileSync("./index.html", "utf8");
-
-  // Concatenate an HTML string for the Postgres data
-  let html = `var tableData = "QUERY: ${userQuery}";`;
-
-  client.query("Select \"user\" -> 'username' as username  from users limit 1", (err, res) => {
-    console.log(err, res);
-    resp.send(htmlData + `` + res.rows[0].username);
-    client.end();
-  });
-
-  // send the HTML file and query response to the front end
-  
-});
-
-var server = app.listen(port, function() {
-  console.log(
-    `\nPostgres Node server is running on port: ${server.address().port}`
-  );
+// set port, listen for requests
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
 });

@@ -1,27 +1,92 @@
 import React from 'react';
-import './App.css';
-import {Link} from 'react-router-dom';
+//import '../public/styles/App.css'
+//import Header from "./header.js"
+import Axios from 'axios'
 
-function Register() {
+class Login extends React.Component {
 
+    constructor(props) {
 
-  return (
-      <div>
-        <h2>Register Page</h2>
-        <form>
-            <label>Username</label>
-            <input type='text' name='username'></input><br/>
-            <label>Password</label>
-            <input type='password' name='password'></input><br/>
-            <label>Confirm Password</label>
-            <input type='password' name='password1'></input><br/>
-            <input type="submit" value="Register"/>
-            <Link to="/user">
-                Register
-              </Link>
-        </form>
-      </div>
-  );
+        super(props);
+
+        this.state = {
+
+            username: '',
+            password: '',
+            confirm_password: ''
+        };
+    }
+
+    handleInputChange = (e) => {
+
+        this.setState({
+
+            [e.target.name]: e.target.value
+
+        });
+    }
+
+    handleSubmit = (e) => {
+
+        e.preventDefault();
+
+        const url = 'http://localhost:4000/';
+
+        const user = {
+
+            username: this.state.username, 
+            password: this.state.password,
+            confirm_password: this.state.confirm_password
+        }
+
+        console.log("username=" + user.username);
+        console.log("password=" + user.password);
+        console.log("confirm_password=" + user.confirm_password);
+
+        Axios.post(url, user).then((res) => {
+
+            console.log(res); 
+
+        }).catch((e) => {
+
+            console.log("error");
+        });
+
+    }
+
+    render() {
+
+        return (
+
+            <div style={{border:"none"}}>
+                <br></br>
+                <br></br>
+                <div style={{background:"white"}}>
+                    <center>
+                    <form onSubmit={this.handleSubmit}>
+                        <br></br>
+                        Username: <br></br>
+                        <input type = "text" onChange={this.handleInputChange} name= "username"></input>
+                        <br></br>
+                        <br></br>
+                        Password: <br></br>
+                        <input type = "password" name = "password" onChange={this.handleInputChange}></input>
+                        <br></br>
+                        <br></br>
+                        Confirm Password: <br></br>
+                        <input type = "password" name = "confirm_password" onChange={this.handleInputChange}></input>
+                        <br></br>
+                        <br></br>
+                        <input type = "submit" value = "Register"></input>
+                        <br></br>
+                    </form>
+                  </center>
+                    <br></br>
+                </div>
+            </div>
+
+        );
+    } 
 }
 
-export default Register;
+export default Login;
