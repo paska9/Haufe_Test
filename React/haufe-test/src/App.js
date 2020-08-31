@@ -5,6 +5,8 @@ import Home from './Home';
 import Login from './Login';
 import User from './User';
 import Register from './Register';
+import Create from './Create';
+import Logout from './Logout';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
@@ -18,6 +20,8 @@ function App() {
           <Route path="/login" component={Login}></Route>
           <Route path="/register" component={Register}></Route>
           <Route exact path="/user" component={User}></Route>
+          <Route exact path="/create" component={Create}></Route>
+          <Route exact path="/logout" component={Logout}></Route>
         </Switch>
       </div>
     </Router>

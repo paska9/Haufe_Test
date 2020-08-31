@@ -1,5 +1,6 @@
 import React from 'react';
-import Axios from 'axios'
+import Axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 
 class User extends React.Component {
@@ -10,10 +11,10 @@ class User extends React.Component {
 
         this.state = {
           usersdata: [],
-          mess: localStorage.getItem('Role') == 'external' ? 'External role dont see all users' : '',
+          loggedIn: localStorage.getItem('loggedIn'),
           Role: localStorage.getItem('Role')
         };
-
+        
     }
 
     async componentDidMount() {
@@ -34,6 +35,11 @@ class User extends React.Component {
         });
       }
     }
+
+    createnewuser = (e) => {
+      console.log("sdfsdfg");
+      this.props.history.push('/create');
+  }
 
 
 
@@ -56,16 +62,18 @@ class User extends React.Component {
 
         return (
           <div>
-            <h2>User Page</h2>
-            <h6 style={{marginTop: -20}}>({this.state.Role})</h6>
-            <h2>{this.state.mess}</h2>
+            { this.state.loggedIn ? <h2>User Page</h2> : <h3>You are not allowed to see this page.</h3> }
+            <h6 style={{marginTop: -20}}>{this.state.loggedIn ? '('+this.state.Role+')' : <br></br>}</h6>
+            <h2>{this.state.Role  == 'external' ? 'External role don\'t see all users' : ''}</h2>
             <div>
             <table>
               <thead>
-                <tr><th>username</th><th>role</th><th></th></tr>
+              {this.state.Role == 'internal' ? <tr><th>username</th><th>role</th><th></th></tr>
+                 : <tr></tr>}
+                
               </thead>
               <tbody>
-                {this.state.usersdata.map(function (item, index) {
+                { this.state.usersdata.map(function (item, index) {
                   return (
                     <tr key={item.id}>
                       <td>{item.user.username}</td>
@@ -77,6 +85,10 @@ class User extends React.Component {
                   );
                 })}
               </tbody>
+              <br></br>
+              {this.state.Role == 'internal' ? <button onClick={this.createnewuser} style={{marginLeft: 30}}>Add new User</button>
+                 : <br></br>}
+              
             </table>
             </div>
           </div>

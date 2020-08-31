@@ -1,6 +1,7 @@
 import React from 'react';
+//import '../public/styles/App.css'
+//import Header from "./header.js"
 import Axios from 'axios'
-
 
 class Login extends React.Component {
 
@@ -9,58 +10,53 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
-
             username: '',
-            password: ''
+            password: '',
+            confirm_password: ''
         };
     }
 
     handleInputChange = (e) => {
-
         this.setState({
             [e.target.name]: e.target.value
         });
     }
 
     handleSubmit = (e) => {
+      e.preventDefault();
 
-        e.preventDefault();
+      const url = 'http://localhost:4000/create';
 
-        const url = 'http://localhost:4000/login';
+      const user = {
+          username: this.state.username, 
+          password: this.state.password,
+          confirm_password: this.state.confirm_password
+      }
 
-        const user = {
-            username: this.state.username, 
-            password: this.state.password
-        }
+      console.log("username=" + user.username);
+      console.log("password=" + user.password);
+      console.log("confirm_password=" + user.confirm_password);
 
-        console.log("username=" + user.username);
-        console.log("password=" + user.password);
-
+      if(user.password === user.confirm_password){
         Axios.post(url, user).then((res) => {
-            if (res.data.allowLogin) {
-                console.log('Login Succesfull');
-                console.log(res.data.userID); 
+          if (res.data.allowLogin) {
+              console.log('Login Succesfull');
+              console.log(res.data.userID); 
                 console.log(res.data.userRole);
-
-                localStorage.setItem('loggedIn', true);
-                localStorage.setItem('ID', res.data.userID);
-                localStorage.setItem('Role', res.data.userRole);
-                
-                this.props.history.push("/user");
-            }
-            else {
-                console.log('Wrong username or password.');
-            }
+              this.props.history.push("/user");
+          }
         }).catch((e) => {
-            console.log("error");
-        });
+          console.log("error");
+      });
+      }else{
+        console.log("The password not matches");
+      }
     }
 
     render() {
         return (
             <div style={{border:"none"}}>
-                <br></br>
-                <br></br>
+                <h2>Create new User</h2>
                 <div style={{background:"white"}}>
                     <center>
                     <form onSubmit={this.handleSubmit}>
@@ -73,7 +69,11 @@ class Login extends React.Component {
                         <input type = "password" name = "password" onChange={this.handleInputChange}></input>
                         <br></br>
                         <br></br>
-                        <input type = "submit" value = "Log-in"></input>
+                        Confirm Password: <br></br>
+                        <input type = "password" name = "confirm_password" onChange={this.handleInputChange}></input>
+                        <br></br>
+                        <br></br>
+                        <input type = "submit" value = "Create"></input>
                         <br></br>
                     </form>
                   </center>

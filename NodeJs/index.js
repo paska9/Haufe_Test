@@ -85,6 +85,35 @@ app.post('/register', (request, response) => {
     });
 });
 
+app.post('/create', (request, response) => {
+  console.log(request.body);
+   
+   let q = "Insert Into users(\"user\") Values('{\"role\":\"external\",\"password\":\""+request.body.password+"\",\"username\":\""+request.body.username+"\"}')";
+   console.log(q); 
+   pool.query(q, (error, results) => {
+      if (error) {
+        throw error;
+      } else {
+        if(results.rowCount == 1){
+        let q = "SELECT id, \"user\" ->> 'role' as role FROM users WHERE \"user\" ->> 'username'  = '"+request.body.username+"' AND \"user\" ->> 'password'  = '"+request.body.password+"' ";
+      
+        pool.query(q, (error, results) => {
+          if (error) {
+            throw error;
+          } else {
+            if (results.rows.length)
+              response.status(200).json({allowLogin: true, userID: results.rows[0].id, userRole: results.rows[0].role});
+            else 
+              response.status(200).json({allowLogin: false, userID: null, userRole: null});
+          }
+        });
+        }
+      }
+    });
+});
+
+
+
 
 app.post('/deleteUser', (request, response) => {
   console.log(request.body);
